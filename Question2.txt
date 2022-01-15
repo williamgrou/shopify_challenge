@@ -1,0 +1,44 @@
+Question 2: For this question you’ll need to use SQL. Follow this link to access the data set required for the challenge. Please use queries to answer the following questions. Paste your queries along with your final numerical answers below.
+
+a.	How many orders were shipped by Speedy Express in total?
+
+SELECT COUNT(DISTINCT(OrderID)) as 'Orders shipped by Speedy Express'
+FROM [Orders] o 
+LEFT JOIN [Shippers] s
+ON o.ShipperID = s.ShipperID
+WHERE s.ShipperName = 'Speedy Express'
+
+answer: 54
+
+
+b.	What is the last name of the employee with the most orders?
+
+SELECT E.LastName,
+       Count(DISTINCT O.OrderID) AS TotalOrders
+FROM [Orders] O
+INNER JOIN [Employees] E
+  ON O.EmployeeID = E.EmployeeID
+GROUP BY O.EmployeeID 
+Order BY Count(DISTINCT O.OrderID) DESC
+LIMIT 1
+
+answer: Peacock
+
+
+c.	What product was ordered the most by customers in Germany?
+
+WITH cte as (
+SELECT * FROM [Orders] o
+LEFT JOIN [OrderDetails] od
+ON o.OrderID = od.OrderID
+LEFT JOIN [Customers] c
+ON o.CustomerID = c.CustomerID
+WHERE c.Country = 'Germany'
+)
+SELECT ProductID, SUM(Quantity)
+from cte
+GROUP BY ProductID
+ORDER BY SUM(Quantity) DESC
+LIMIT 1
+
+answer: 160 units of product 40 were ordered by customers based in Germany, making it the most ordered product by Germans.  
